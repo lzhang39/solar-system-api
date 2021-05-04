@@ -1,7 +1,5 @@
 from app import db
-from flask import Blueprint
-from flask import request
-from flask import jsonify
+from flask import request, Blueprint, make_response, jsonify
 from .models.planet import Planet
 
 planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
@@ -39,17 +37,19 @@ def planet_index():
     return jsonify(planets_response), 200
 
 
-@planets_bp.route("/<planet_id>", methods=["GET"], strict_slashes=False)
-def get_one_planet(planet_id):
-    # if not isinstance(planet_id, int):
-    #     return {
-    #         "success": False,
-    #         "message": f"ID {planet_id} must be an integer"
-    #     }, 400
+@planets_bp.route("/<planet_id>", methods=["GET", "PUT", "DELETE"], strict_slashes=False)
+def handle_planet(planet_id):
 
     planet = Planet.query.get(planet_id)
 
-    if planet:
+    if planet is None:
+        # return make_response("", 404)
+        return {
+        "success": False,
+        "message": f"Planet with ID {planet_id} was not found"
+    }, 404
+
+    if request.method=="GET":
         return {
             "id": planet.id,
             "name": planet.name,
@@ -57,7 +57,17 @@ def get_one_planet(planet_id):
             "order_from_sun": planet.order_from_sun
         }, 200
 
-    return {
-        "success": False,
-        "message": f"Planet with ID {planet_id} was not found"
-    }, 404
+    elif request.method=="PUT":
+        form_data=request.get_json()
+        planet.name=form_data["name"]
+        planet.description=form_data['description']
+        planet.order_from_sun=form_data["order_from_sun"]
+        db.session.commit()
+        return make_response(f"Planet {planet.id} successfully updated")
+
+    elif request.method=="DELETE":
+        db.session.delete(planet)
+        db.session.commit()
+        return make_response(f"Planet {planet.id} successfully deleted")
+
+   
