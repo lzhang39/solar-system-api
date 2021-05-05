@@ -45,11 +45,11 @@ def handle_planet(planet_id):
     if planet is None:
         # return make_response("", 404)
         return {
-        "success": False,
-        "message": f"Planet with ID {planet_id} was not found"
-    }, 404
+            "success": False,
+            "message": f"Planet with ID {planet_id} was not found"
+        }, 404
 
-    if request.method=="GET":
+    if request.method == "GET":
         return {
             "id": planet.id,
             "name": planet.name,
@@ -57,17 +57,15 @@ def handle_planet(planet_id):
             "order_from_sun": planet.order_from_sun
         }, 200
 
-    elif request.method=="PUT":
-        form_data=request.get_json()
-        planet.name=form_data["name"]
-        planet.description=form_data['description']
-        planet.order_from_sun=form_data["order_from_sun"]
+    elif request.method == "PUT":
+        form_data = request.get_json()
+        planet.name = form_data["name"]
+        planet.description = form_data['description']
+        planet.order_from_sun = form_data["order_from_sun"]
         db.session.commit()
         return make_response(f"Planet {planet.id} successfully updated")
 
-    elif request.method=="DELETE":
+    elif request.method == "DELETE":
         db.session.delete(planet)
         db.session.commit()
         return make_response(f"Planet {planet.id} successfully deleted")
-
-   
