@@ -57,7 +57,7 @@ def test_create_one_planet(client, one_planet):
     assert response.status_code == 201
     assert response_body == {
         'success': True,
-        'message': 'Planet Venus has been created'
+        'message': f"Planet {one_planet['name']} has been created"
         }
 
 # How do we use "one_planet.name" instead of Venus
