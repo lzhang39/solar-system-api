@@ -34,3 +34,9 @@ def two_saved_planets(app):
 
     db.session.add_all([mercury, venus])
     db.session.commit()
+
+@pytest.fixture
+def one_planet(app):
+    return {"name": "Venus",
+            "description": "Goddess of beauty",
+            "order_from_sun": 2}

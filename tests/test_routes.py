@@ -50,30 +50,14 @@ def test_get_all_planets(client, two_saved_planets):
                               "order_from_sun": 2}]
 
 
-# def test_create_one_planet(client):
-#     # Act
-#     response = client.post("/planets")
-#     request_body = {"name": "Venus",
-#                     "description": "Goddess of beauty",
-#                     "order_from_sun": 2}
-#     response_body = response.get_json()
-
-#     # Assert
-#     assert response.status_code == 201
-#     # assert response_body == {"name": "Venus",
-#     #                           "description": "Goddess of beauty",
-#     #                           "id": 2,
-#     #                           "order_from_sun": 2}
-
-
-def test_create_one_planet(client):
-    response = client.post("/planets", {"name": "Venus",
-                                        "description": "Goddess of beauty",
-                                        "order_from_sun": 2})
+def test_create_one_planet(client, one_planet):
+    response = client.post("/planets", json=one_planet)
     response_body = response.get_json()
 
     assert response.status_code == 201
-    # assert response_body == {"name": "Venus",
-    #                          "description": "Goddess of beauty",
-    #                          "id": 2,
-    #                          "order_from_sun": 2}
+    assert response_body == {
+        'success': True,
+        'message': 'Planet Venus has been created'
+        }
+
+# How do we use "one_planet.name" instead of Venus
